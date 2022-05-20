@@ -16,9 +16,10 @@ model = tensorflow.keras.Sequential([
     GlobalMaxPool2D()
 ])
 
-feature_list = np.array(pickle.load(open('assets/embeddings.pkl', 'rb')))
-filenames = pickle.load(open('filenames.pkl', 'rb'))
+# feature_list = np.array(pickle.load(open('assets/embeddings.pkl', 'rb')))
+# filenames = pickle.load(open('filenames.pkl', 'rb'))
 
+feature_list = np.array(pickle.load(open('flipkart_embeddings.pkl', 'rb')))
 
 # creating feature for given image
 def extract_features(img_path, model):
@@ -38,4 +39,5 @@ def get_result(img_path):
     neighbors.fit(feature_list)
     distances, indices = neighbors.kneighbors([norm_result])
 
-    return [filenames[file] for file in indices[0]]
+    # return [filenames[file] for file in indices[0]]
+    return indices.tolist()[0]

@@ -4,10 +4,10 @@ from dash import html
 import dash_bootstrap_components as dbc
 
 # Local File
-# import recommend
+import recommend
 import analysis
 
-theme = [dbc.themes.DARKLY]
+theme = [dbc.themes.SOLAR]
 app = dash.Dash(__name__, external_stylesheets=theme,suppress_callback_exceptions=True,
                 meta_tags=[{'name': 'viewport',
                             'content': 'width=device-width, initial-scale=1.0'}])
@@ -55,12 +55,12 @@ dbc.Row([
     Input('url', 'pathname'))
 def update(x):
     if x == '/':
-        # return recommend.recommend_div
+        return recommend.recommend_div
         pass
     elif x == '/analysis':
         return analysis.dashboard
 
 
 if __name__ == '__main__':
-    # app.run_server(debug=True, host='0.0.0.0', port=8080)
+    # app.run_server(host='0.0.0.0', port=8080)
     app.run_server(debug=False)

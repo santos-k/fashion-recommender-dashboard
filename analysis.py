@@ -17,7 +17,7 @@ dashboard = dcc.Loading([dbc.Row([
             dbc.Col([
                 dbc.Card([
                     html.Label(' Filter Data: ')
-                ], className='bg-warning ')
+                ], className='bg-gradient ')
 
             ], width='auto'),
             dbc.Col([
@@ -36,30 +36,30 @@ dashboard = dcc.Loading([dbc.Row([
             dbc.Col([
                 dbc.Card([
                     dbc.Row([
-                        dbc.Label('Total Records', className='text-warning'),
-                        html.H1(df.shape[0], id='features')
+                        dbc.Label('Total Records', className='text-black'),
+                        html.H1(df.shape[0], id='features',className='text-white')
                     ]),
                 ], color="primary", className='m-2 bg-gradient'),
             ]),
             dbc.Col([
                 dbc.Card([
                     dbc.Row([
-                        dbc.Label('Total Features', className='text-warning'),
-                        html.H1(df.shape[1], id='features')
+                        dbc.Label('Total Features', className='text-black'),
+                        html.H1(df.shape[1], id='features',className='text-white')
                     ]),
                 ], color="primary", className='m-2 bg-gradient'),
             ]),
             dbc.Col([
                 dbc.Card([
                     dbc.Row([
-                        dbc.Label('Null Values', className='text-warning '),
-                        html.H1(df.isnull().sum().sum(), id='features')
+                        dbc.Label('Null Values', className='text-black '),
+                        html.H1(df.isnull().sum().sum(), id='features',className='text-white')
                     ]),
                 ], color="primary", className='m-2 bg-gradient'),
             ]),
             dbc.Col([
                 dbc.Col([
-                    dbc.Card([html.Header(f'Null Values {str(round((df.isnull().mean() * 100).sum(), 2))} %'),
+                    dbc.Card([html.Header(f'Null Values {str(round((df.isnull().mean() * 100).sum(), 2))} %',className='text-black'),
                               daq.Gauge(id='acc_gauge',
                                         color={"gradient": True,
                                                "ranges": {"red": [30, 100], "yellow": [10, 30], "green": [0, 10]}},
@@ -191,7 +191,7 @@ def update_brand(df):
 
 def update_productColor(df):
     colors = df[['gender', 'baseColour']].value_counts().reset_index()
-    fig = px.bar(colors, x='gender', y=0, color='baseColour', width=340, height=260,
+    fig = px.bar(colors, x='gender', y=0, color='baseColour', width=340, height=240,
                  text='baseColour')
     fig.update_yaxes(title_text='Product Counts')
     fig.update(layout_showlegend=False)

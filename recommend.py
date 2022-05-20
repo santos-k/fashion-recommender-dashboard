@@ -1,44 +1,84 @@
 from dash import dash, html, dcc, Output, Input, State, callback
 import dash_bootstrap_components as dbc
-import re
 import base64
-import prediction
 import pandas as pd
 import os
+import requests
+from bs4 import BeautifulSoup
 
-df = pd.read_csv('data.csv')
+import prediction
+df = pd.read_csv('flipkart_data.csv')
 
 
-def create_product_card(img_path):
-    a = img_path
-    img_id = int(re.findall('[\d]+', a)[0])
-    try:
-        heading = df[df['id'] == img_id]['productDisplayName'].iloc[0]
-        # print(heading)
-    except:
-        heading = 'No info found'
+def create_product_card(index):
+    img_url = df.iloc[index]['img']
+    title = df.iloc[index]['title']
+    url = df.iloc[index]['url']
+
+    data = requests.get(url)
+    # print('data get')
+    soup = BeautifulSoup(data.text, 'html.parser')
+    ratings = soup.find_all('div', {'class': '_3LWZlK _3uSWvT'})
+    price_web = soup.find_all('div', {'class': '_30jeq3 _16Jk6d'})
+    rating = 0
+    price = 0
+    # print(rating,price)
+    for i in ratings: rating = i.text
+    for i in price_web: price = i.text
+
+    heading = title
 
     card = dbc.Card(
         [dbc.Carousel(
-            items=[{"key": "1", "src": img_path}], controls=False, indicators=False),
+            items=[{"key": "1", "src": img_url, "img_style": {'max-height': "200px"}}], controls=False,
+            indicators=False),
             dbc.CardBody(
                 [
-                    html.Label(heading[:30], className="card-title text-black"),
-                    # dbc.Button(btn_name, color="primary"),
+                    html.Label(f'{heading[:30]}...', className="card-title text-black"),
                     html.Br(),
-                    dbc.CardLink("Web Search", href=f'https://www.google.com/search?q={"+".join(heading.split())}',
-                                 target="_blank",className='text-primary'),
+                    html.Div([
+                        dbc.Badge([
+                            dbc.Row([
+                                dbc.Col([
+                                    html.Label('₹')
+                                ], width="auto"),
+
+                                dbc.Col([
+                                    html.Label(price.replace('₹', ''))
+                                ])
+                            ])
+                        ], pill=True, color="primary", className="me-1", style={}),
+                        dbc.Badge([
+                            dbc.Row([
+                                dbc.Col([
+                                    html.Img(src='assets/star.svg')
+                                ], width="auto"),
+
+                                dbc.Col([
+                                    html.Label(rating)
+                                ])
+                            ])
+                        ], pill=True, color="primary", className="me-1", style={}),
+
+                    ]),
+
+                    dbc.Button("Buy", outline=True, href=url, size='sm', target="_blank", color="danger",
+                               className="m-2", style={'height': 'auto'}),
+                    # html.Br(),
+                    # dbc.CardLink("Buy", className='text-primary'),
                 ], className='text-center',
             ),
         ],
-        style={"width": "200px", 'height': '400px'}, className='bg-light'
+        style={"width": "200px", 'height': '350px'}, className='bg-gradient, m-2'
     ),
+
     return card
 
 
 recommend_div = dbc.Container([
     dbc.Row([
-        dbc.Card('Fashion Product Recommender Dashboard', className='text-center fs-4 fw-bold'),
+        dbc.Badge('Flipkart Fashion Product Recommender', pill=True, color="success", text_color='black',
+                  className="me-1 text-center fs-4 fw-bold", style={'width': "auto"}),
         html.Br(),
         dbc.Row([
             dbc.Card([dbc.Row([
@@ -53,7 +93,7 @@ recommend_div = dbc.Container([
                 }),
                          html.Label('Uploaded Image')]),
 
-                dbc.Col([dcc.Upload(['Drag and Drop or ', html.Br(), html.A('Select a File')],
+                dbc.Col([dcc.Upload(['Drag and Drop or ', html.Br(), html.A('Select an Image', href='#')],
                                     style={'width': '150px',
                                            'height': '150px',
                                            'lineHeight': '60px',
@@ -63,32 +103,32 @@ recommend_div = dbc.Container([
                                            'textAlign': 'center'},
                                     id='upload-image'),
                          html.Label('Upload Here')])]),
-                dbc.Row([dbc.Button('Show Recommendations', id='show-btn', n_clicks=0, className='m-2 text-center',
+                dbc.Row([dbc.Button('Search', outline=True, color="primary", id='show-btn', n_clicks=0,
+                                    className='m-2 text-center',
                                     style={'width': '50%', })],
                         justify='center',
                         align='center',
                         style={'textAlign': 'center'})
 
-            ], className='p-2', style={'text-align': 'center','width': '350px'})
-            ], className='p-3', style={'text-align': 'center'}, align='center', justify='center'),
-
-        html.Div(dbc.Card([html.Label("10 closest Recommendations")], className='bg-light')),
+            ], className='p-2 bg-gradient', style={'text-align': 'center', 'width': '350px'})
+        ], className='p-3', style={'text-align': 'center'}, align='center', justify='center'),
+        html.Div(dbc.Badge('Recommendations', color='#85e35f', text_color='black')),
         html.Br(),
-dcc.Loading([
-        dbc.Row([
+        dcc.Loading([
+            dbc.Row([
 
-            dbc.Col(id='product1'),
-            dbc.Col(id='product2'),
-            dbc.Col(id='product3'),
-            dbc.Col(id='product4'),
-            dbc.Col(id='product5'),
-            dbc.Col(id='product6'),
-            dbc.Col(id='product7'),
-            dbc.Col(id='product8'),
-            dbc.Col(id='product9'),
-            dbc.Col(id='product10'),
-        ],className='m-2')
-],color="#119DFF", type="cube", fullscreen=True,className='bg-dark')
+                dbc.Col(id='product1'),
+                dbc.Col(id='product2'),
+                dbc.Col(id='product3'),
+                dbc.Col(id='product4'),
+                dbc.Col(id='product5'),
+                dbc.Col(id='product6'),
+                dbc.Col(id='product7'),
+                dbc.Col(id='product8'),
+                dbc.Col(id='product9'),
+                dbc.Col(id='product10'),
+            ], className='m-2')
+        ], color="#119DFF", type="default", fullscreen=True, className='bg-dark bg-gradient')
 
     ], justify='center', align='center', style={'text-align': 'center'})
 ])
@@ -133,11 +173,14 @@ def update_result(n_clicks):
         try:
             result = prediction.get_result('assets/input_img.jpeg')
             os.remove("assets/input_img.jpeg")
+            # print(result)
             return create_product_card(result[0]), create_product_card(result[1]), \
-               create_product_card(result[2]), create_product_card(result[3]),create_product_card(result[4]), \
-               create_product_card(result[5]),create_product_card(result[6]),create_product_card(result[7]),\
-                create_product_card(result[8]),create_product_card(result[9])
-        except :
-            return  html.P(''), html.P(''),html.P(''), html.P(''),html.P(''),html.P('Upload Image First or Change the Image!'), html.P(''), html.P(''),html.P(''), html.P(''),
+                   create_product_card(result[2]), create_product_card(result[3]), create_product_card(result[4]), \
+                   create_product_card(result[5]), create_product_card(result[6]), create_product_card(result[7]), \
+                   create_product_card(result[8]), create_product_card(result[9])
+        except:
+            return html.P(''), html.P(''), html.P(''), html.P(''), html.P(
+                'Upload Image First or Change the Image!'), html.P(''), html.P(''), html.P(''), html.P(''), html.P(''),
     else:
-        return html.P(''), html.P(''), html.P(''), html.P(''), html.P(''),html.P(''), html.P(''), html.P(''), html.P(''), html.P('')
+        return html.P(''), html.P(''), html.P(''), html.P(''), html.P(''), html.P(''), html.P(''), html.P(''), html.P(
+            ''), html.P('')
