@@ -5,7 +5,7 @@ import pandas as pd
 import dash_daq as daq
 import plotly.graph_objs as go
 
-df2 = pd.read_csv('data.csv')
+# df2 = pd.read_csv('data.csv')
 df = pd.read_csv('data.csv')
 
 dashboard = dcc.Loading([dbc.Row([
@@ -21,7 +21,7 @@ dashboard = dcc.Loading([dbc.Row([
 
             ], width='auto'),
             dbc.Col([
-                dcc.Dropdown([x for x in df2.columns][2:-1], id='columns',
+                dcc.Dropdown([x for x in df.columns][2:-1], id='columns',
                              style={'color': 'black'}, placeholder="Select Field...(Default no filter applied)"),
             ]),
             dbc.Col([
@@ -37,7 +37,7 @@ dashboard = dcc.Loading([dbc.Row([
                 dbc.Card([
                     dbc.Row([
                         dbc.Label('Total Records', className='text-black'),
-                        html.H1(df.shape[0], id='features',className='text-white')
+                        html.H1(df.shape[0], id='features', className='text-white')
                     ]),
                 ], color="primary", className='m-2 bg-gradient'),
             ]),
@@ -45,7 +45,7 @@ dashboard = dcc.Loading([dbc.Row([
                 dbc.Card([
                     dbc.Row([
                         dbc.Label('Total Features', className='text-black'),
-                        html.H1(df.shape[1], id='features',className='text-white')
+                        html.H1(df.shape[1], id='features', className='text-white')
                     ]),
                 ], color="primary", className='m-2 bg-gradient'),
             ]),
@@ -53,13 +53,14 @@ dashboard = dcc.Loading([dbc.Row([
                 dbc.Card([
                     dbc.Row([
                         dbc.Label('Null Values', className='text-black '),
-                        html.H1(df.isnull().sum().sum(), id='features',className='text-white')
+                        html.H1(df.isnull().sum().sum(), id='features', className='text-white')
                     ]),
                 ], color="primary", className='m-2 bg-gradient'),
             ]),
             dbc.Col([
                 dbc.Col([
-                    dbc.Card([html.Header(f'Null Values {str(round((df.isnull().mean() * 100).sum(), 2))} %',className='text-black'),
+                    dbc.Card([html.Header(f'Null Values {str(round((df.isnull().mean() * 100).sum(), 2))} %',
+                                          className='text-black'),
                               daq.Gauge(id='acc_gauge',
                                         color={"gradient": True,
                                                "ranges": {"red": [30, 100], "yellow": [10, 30], "green": [0, 10]}},
@@ -237,14 +238,13 @@ def update_season(df):
 
 @callback(
     Output('col_value', 'options'),
-    # Output('col_value', 'value'),
     Input('columns', 'value')
 )
 def update_drop(x):
     if x == '' or x is None:
         return ['']
     else:
-        x = df2[x].value_counts().index.tolist()
+        x = df[x].value_counts().index.tolist()
         return x
 
 
@@ -260,22 +260,17 @@ def update_drop(x):
     Input('columns', 'value'),
     Input('col_value', 'value'))
 def update_data(x, y):
-    df = df2
+    df2 = None
     if x is not None and y is not None:
-        if len(y) > 0:
-            df2.loc[df2[x].isin(y)] = df
-        else:
-            df = df2
-    try:
-        df = df.dropna()
-        gender = update_gender(df)
-        category = update_category(df)
-        subcat = update_subcategory(df)
-        brand = update_brand(df)
-        color = update_productColor(df)
-        usage = update_usage(df)
-        season = update_season(df)
-    except:
-        pass
-
+        df2 = df[df[x].isin(y)]
+    else:
+        df2 = df
+    df2 = df2.dropna()
+    gender = update_gender(df2)
+    category = update_category(df2)
+    subcat = update_subcategory(df2)
+    brand = update_brand(df2)
+    color = update_productColor(df2)
+    usage = update_usage(df2)
+    season = update_season(df2)
     return gender, category, subcat, brand, color, usage, season

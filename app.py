@@ -8,7 +8,7 @@ import recommend
 import analysis
 
 theme = [dbc.themes.SOLAR]
-app = dash.Dash(__name__, external_stylesheets=theme,suppress_callback_exceptions=True,
+app = dash.Dash(__name__, external_stylesheets=theme, suppress_callback_exceptions=True,
                 meta_tags=[{'name': 'viewport',
                             'content': 'width=device-width, initial-scale=1.0'}])
 server = app.server
@@ -27,11 +27,12 @@ app.layout = dbc.Container([
                        id='model_link',
                        n_clicks=0))),
 
-            dbc.NavItem(dbc.NavLink(html.A("Source Code", href="https://github.com/withusanty/fashion-recommender-dashboard",
-                                           className="me-1 text-white text-decoration-none fs-5"))),
+            dbc.NavItem(
+                dbc.NavLink(html.A("Source Code", href="https://github.com/withusanty/fashion-recommender-dashboard",
+                                   className="me-1 text-white text-decoration-none fs-5"))),
             dbc.NavItem(html.A(
                 [dbc.CardImg(src='assets/profile.png', style={'width': '30px', 'height': '30px'}, className='my-2')],
-                href='https://isantosh-portfolio.herokuapp.com/')),
+                href='https://santos-k.github.io/')),
 
         ], fixed='top',
         brand="Fashion Product Recommender",
@@ -42,8 +43,7 @@ app.layout = dbc.Container([
     html.Br(),
     html.Br(),
 
-
-dbc.Row([
+    dbc.Row([
         dcc.Location(id='url', refresh=True),
     ], id='display')
 
@@ -62,5 +62,5 @@ def update(x):
 
 
 if __name__ == '__main__':
-    # app.run_server(host='0.0.0.0', port=8080)
-    app.run_server(debug=False)
+    app.run_server(host='0.0.0.0', port=8080, debug=False)
+    # app.run_server(host='0.0.0.0', port=8080, debug=True)

@@ -7,6 +7,7 @@ import requests
 from bs4 import BeautifulSoup
 
 import prediction
+
 df = pd.read_csv('flipkart_data.csv')
 
 
@@ -16,13 +17,11 @@ def create_product_card(index):
     url = df.iloc[index]['url']
 
     data = requests.get(url)
-    # print('data get')
     soup = BeautifulSoup(data.text, 'html.parser')
     ratings = soup.find_all('div', {'class': '_3LWZlK _3uSWvT'})
     price_web = soup.find_all('div', {'class': '_30jeq3 _16Jk6d'})
     rating = 0
     price = 0
-    # print(rating,price)
     for i in ratings: rating = i.text
     for i in price_web: price = i.text
 
@@ -44,7 +43,7 @@ def create_product_card(index):
                                 ], width="auto"),
 
                                 dbc.Col([
-                                    html.Label(price.replace('₹', ''))
+                                    html.Label(str(price).replace("₹", ''))
                                 ])
                             ])
                         ], pill=True, color="primary", className="me-1", style={}),
@@ -62,10 +61,9 @@ def create_product_card(index):
 
                     ]),
 
-                    dbc.Button("Buy", outline=True, href=url, size='sm', target="_blank", color="danger",
-                               className="m-2", style={'height': 'auto'}),
-                    # html.Br(),
-                    # dbc.CardLink("Buy", className='text-primary'),
+                    dbc.Button("Buy", outline=True, href=url, size='md', target="_blank", color="danger",
+                               className="m-2", style={'height': 'auto', 'width': '150px'}),
+
                 ], className='text-center',
             ),
         ],
@@ -170,17 +168,16 @@ def update_input_img(contents):
 )
 def update_result(n_clicks):
     if n_clicks > 0:
-        try:
-            result = prediction.get_result('assets/input_img.jpeg')
-            os.remove("assets/input_img.jpeg")
-            # print(result)
-            return create_product_card(result[0]), create_product_card(result[1]), \
-                   create_product_card(result[2]), create_product_card(result[3]), create_product_card(result[4]), \
-                   create_product_card(result[5]), create_product_card(result[6]), create_product_card(result[7]), \
-                   create_product_card(result[8]), create_product_card(result[9])
-        except:
-            return html.P(''), html.P(''), html.P(''), html.P(''), html.P(
-                'Upload Image First or Change the Image!'), html.P(''), html.P(''), html.P(''), html.P(''), html.P(''),
+        # try:
+        result = prediction.get_result('assets/input_img.jpeg')
+        os.remove("assets/input_img.jpeg")
+        return create_product_card(result[0]), create_product_card(result[1]), \
+               create_product_card(result[2]), create_product_card(result[3]), create_product_card(result[4]), \
+               create_product_card(result[5]), create_product_card(result[6]), create_product_card(result[7]), \
+               create_product_card(result[8]), create_product_card(result[9])
+        # except:
+        #     return html.P(''), html.P(''), html.P(''), html.P(''), html.P(
+        #         'Upload Image First or Change the Image!'), html.P(''), html.P(''), html.P(''), html.P(''), html.P(''),
     else:
         return html.P(''), html.P(''), html.P(''), html.P(''), html.P(''), html.P(''), html.P(''), html.P(''), html.P(
             ''), html.P('')
