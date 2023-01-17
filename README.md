@@ -1,4 +1,14 @@
 # Fashion Recommendation System
+
+[![Python 3.10](https://img.shields.io/badge/python-3.10-blue.svg)](https://www.python.org/downloads/release/python-310/)
+[![Dash 2.7](https://img.shields.io/badge/Dash-2.7-blue)](https://dash.plotly.com/)
+[![Plolty 5.11](https://img.shields.io/badge/Plotly-5.11-blue)](https://pypi.org/project/plotly/)
+![GitHub repo size](https://img.shields.io/github/repo-size/santos-k/fashion-recommender-dashboard?logo=github) 
+![GitHub Repo stars](https://img.shields.io/github/stars/santos-k/fashion-recommender-dashboard?style=social) 
+![GitHub watchers](https://img.shields.io/github/watchers/santos-k/fashion-recommender-dashboard?style=social) 
+![GitHub followers](https://img.shields.io/github/followers/santos-k?style=social) 
+![Bower](https://img.shields.io/bower/l/flask) 
+
 ## Overview
 The project is a neural network-based fashion recommendation system built using Python. The model used for this system is Resnet50, which is a deep learning model used for image recognition. The data used for training the model is scraped from Flipkart, with a total of 65,000 images.
 
