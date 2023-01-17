@@ -88,3 +88,9 @@ This project is licensed under the MIT License - see the LICENSE.md file for det
 
 ### Don't forget to give a star if you find it helpful.
 This system is made as a part of the project and is open for contributions and modifications.
+![image](https://user-images.githubusercontent.com/40932902/212926848-fa800209-f3b2-44ce-a83d-c351122d5c49.png)
+![image](https://user-images.githubusercontent.com/40932902/212927003-31092c19-a1d8-47cb-a217-1eb561752140.png)
+![image](https://user-images.githubusercontent.com/40932902/212927082-8428e378-db1b-4adb-9b55-22aebbf9fe32.png)
+
+![image](https://user-images.githubusercontent.com/40932902/212926797-74809843-1d3d-4fd2-913a-555c5edf85f6.png)
+   
